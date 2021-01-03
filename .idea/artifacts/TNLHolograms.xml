@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="TNLHolograms">
+    <output-path>$USER_HOME$/Desktop/Coding/PluginProjects/Plugins</output-path>
+    <root id="archive" name="TNLHolograms.jar">
+      <element id="module-output" name="TNLHolograms" />
+      <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
+    </root>
+  </artifact>
+</component>
