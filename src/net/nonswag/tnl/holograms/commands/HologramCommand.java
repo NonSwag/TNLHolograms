@@ -28,7 +28,7 @@ public class HologramCommand implements CommandExecutor {
                         String name = args[1];
                         if (Holograms.get(name) == null) {
                             if (args.length >= 3) {
-                                Hologram hologram = Holograms.create(name);
+                                Hologram hologram = Holograms.create(name, true);
                                 hologram.setLocation(player.getLocation());
                                 hologram.addLines(Arrays.asList(args).subList(2, args.length));
                                 hologram.save();

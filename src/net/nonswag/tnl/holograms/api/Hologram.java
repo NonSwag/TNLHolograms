@@ -32,10 +32,12 @@ public class Hologram {
     private double lineDistance = 0.25D;
     private int darkness = 1;
 
-    public Hologram(@Nonnull String name, String... lines) {
+    public Hologram(@Nonnull String name, boolean cache, String... lines) {
         this.name = name.toLowerCase();
         getLines().addAll(Arrays.asList(lines));
-        Holograms.save(this);
+        if (cache) {
+            Holograms.save(this);
+        }
     }
 
     @Nonnull

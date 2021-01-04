@@ -93,7 +93,7 @@ public class Holograms extends JavaPlugin {
         getHologramHashMap().clear();
         List<String> holograms = list();
         for (String s : holograms) {
-            Hologram hologram = getOrDefault(s, new Hologram(s));
+            Hologram hologram = getOrDefault(s, new Hologram(s, true));
             try {
                 hologram.setDarkness(new Object<>(getSaves().getInteger(hologram.getName() + "-darkness")).getOrDefault(1));
                 hologram.setLineDistance(new Object<>(getSaves().getDouble(hologram.getName() + "-line-distance")).getOrDefault(0.25D));
@@ -225,8 +225,8 @@ public class Holograms extends JavaPlugin {
         return getHologramHashMap().get(name.toLowerCase());
     }
 
-    public static Hologram create(@Nonnull String name) {
-        return new Hologram(name.toLowerCase());
+    public static Hologram create(@Nonnull String name, boolean cache) {
+        return new Hologram(name.toLowerCase(), cache);
     }
 
     public static void save(@Nonnull Hologram hologram) {
