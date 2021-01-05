@@ -159,7 +159,7 @@ public class Hologram {
     public void teleport(Location location, TNLPlayer player) {
         for (int line = 0; line < getLines().size(); line++) {
             for (int darkness = 0; darkness < getDarkness(); darkness++) {
-                Object id = player.getVirtualStorage().get("hologram=" + this.getName() + ",line=0,darkness=0");
+                Object id = player.getVirtualStorage().get("hologram=" + this.getName() + ",line=" + line + ",darkness=" + darkness);
                 if (id instanceof Integer) {
                     PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport();
                     PacketUtil.setPacketField(teleport, "a", id);
