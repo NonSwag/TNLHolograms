@@ -12,10 +12,11 @@ import net.nonswag.tnl.holograms.listeners.QuitListener;
 import net.nonswag.tnl.holograms.listeners.WorldChangeListener;
 import net.nonswag.tnl.holograms.tabcompleter.HologramCommandTabCompleter;
 import net.nonswag.tnl.listener.NMSMain;
-import net.nonswag.tnl.listener.api.fileAPI.Configuration;
-import net.nonswag.tnl.listener.api.objectAPI.Object;
+import net.nonswag.tnl.listener.api.file.Configuration;
+import net.nonswag.tnl.listener.api.object.Object;
+import net.nonswag.tnl.listener.api.server.Server;
 import net.nonswag.tnl.listener.v1_15_R1.TNLListener;
-import net.nonswag.tnl.listener.v1_15_R1.api.playerAPI.TNLPlayer;
+import net.nonswag.tnl.listener.v1_15_R1.api.player.TNLPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -135,7 +136,21 @@ public class Holograms extends JavaPlugin {
                     armorStand.setCollidable(false);
                     armorStand.setInvulnerable(true);
                     armorStand.setGravity(false);
-                    armorStand.setCustomName(hologram.getLines().get(line).
+                    String s = hologram.getLines().get((hologram.getLines().size() - 1) - line);
+                    if (s.contains("%status_") || s.contains("%online_") || s.contains("%max_online_")) {
+                        for (Server server : Server.getServers()) {
+                            if (s.contains("%status_" + server.getName() + "%")) {
+                                s = s.replace("%status_" + server.getName() + "%", server.isOnline() ? "Online" : "Offline");
+                            }
+                            if (s.contains("%online_" + server.getName() + "%")) {
+                                s = s.replace("%online_" + server.getName() + "%", server.getPlayerCount() + "");
+                            }
+                            if (s.contains("%max_online_" + server.getName() + "%")) {
+                                s = s.replace("%max_online_" + server.getName() + "%", server.getMaxPlayerCount() + "");
+                            }
+                        }
+                    }
+                    armorStand.setCustomName(s.
                             replace("&", "§").
                             replace(">>", "»").
                             replace("<<", "«").

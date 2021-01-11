@@ -4,7 +4,7 @@ import net.minecraft.server.v1_15_R1.PacketPlayOutEntityTeleport;
 import net.nonswag.tnl.holograms.Holograms;
 import net.nonswag.tnl.listener.NMSMain;
 import net.nonswag.tnl.listener.v1_15_R1.TNLListener;
-import net.nonswag.tnl.listener.v1_15_R1.api.playerAPI.TNLPlayer;
+import net.nonswag.tnl.listener.v1_15_R1.api.player.TNLPlayer;
 import net.nonswag.tnl.listener.v1_15_R1.utils.PacketUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -23,6 +23,8 @@ public class Hologram {
     %display_name% -> The display name of the player who is reading this
     %language% -> The client language of the player who is reading this
     %server% -> The name of the current server
+    %status_$SERVER% -> The status of the server (Online/Offline)
+    %online_$SERVER% -> The player count of the server
 
     & = §
     >> = »
