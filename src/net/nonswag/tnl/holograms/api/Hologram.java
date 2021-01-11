@@ -25,6 +25,7 @@ public class Hologram {
     %server% -> The name of the current server
     %status_$SERVER% -> The status of the server (Online/Offline)
     %online_$SERVER% -> The player count of the server
+    %max_online_$SERVER% -> The maximum player count of the server
 
     & = §
     >> = »
