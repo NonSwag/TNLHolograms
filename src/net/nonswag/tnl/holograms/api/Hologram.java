@@ -1,11 +1,8 @@
 package net.nonswag.tnl.holograms.api;
 
-import net.minecraft.server.v1_15_R1.PacketPlayOutEntityTeleport;
 import net.nonswag.tnl.holograms.Holograms;
 import net.nonswag.tnl.listener.NMSMain;
-import net.nonswag.tnl.listener.v1_15_R1.TNLListener;
 import net.nonswag.tnl.listener.v1_15_R1.api.player.TNLPlayer;
-import net.nonswag.tnl.listener.v1_15_R1.utils.PacketUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -160,33 +157,19 @@ public class Hologram {
     }
 
     public void teleport(Location location, TNLPlayer player) {
-        for (int line = 0; line < getLines().size(); line++) {
-            for (int darkness = 0; darkness < getDarkness(); darkness++) {
-                Object id = player.getVirtualStorage().get("hologram=" + this.getName() + ",line=" + line + ",darkness=" + darkness);
-                if (id instanceof Integer) {
-                    PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport();
-                    PacketUtil.setPacketField(teleport, "a", id);
-                    PacketUtil.setPacketField(teleport, "b", location.getX());
-                    PacketUtil.setPacketField(teleport, "c", location.getY());
-                    PacketUtil.setPacketField(teleport, "d", location.getZ());
-                    player.sendPacket(teleport);
-                }
-            }
-        }
+        Holograms.teleport(this, location, player);
     }
 
     public void teleportAll(Location location) {
-        for (TNLPlayer all : TNLListener.getOnlinePlayers()) {
-            teleport(location, all);
-        }
+        Holograms.teleportAll(this, location);
     }
 
     public void teleportAll(double offsetX, double offsetY, double offsetZ) {
-        this.teleportAll(this.getLocation().clone().add(offsetX, offsetY, offsetZ));
+        Holograms.teleportAll(this, offsetX, offsetY, offsetZ);
     }
 
     public void teleport(double offsetX, double offsetY, double offsetZ, TNLPlayer player) {
-        this.teleport(this.getLocation().clone().add(offsetX, offsetY, offsetZ), player);
+        Holograms.teleport(this, offsetX, offsetY, offsetZ, player);
     }
 
     public void load(TNLPlayer player) {

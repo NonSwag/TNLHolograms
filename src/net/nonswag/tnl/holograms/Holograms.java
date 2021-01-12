@@ -1,9 +1,6 @@
 package net.nonswag.tnl.holograms;
 
-import net.minecraft.server.v1_15_R1.EntityArmorStand;
-import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_15_R1.PacketPlayOutEntityMetadata;
-import net.minecraft.server.v1_15_R1.PacketPlayOutSpawnEntity;
+import net.minecraft.server.v1_15_R1.*;
 import net.nonswag.tnl.holograms.api.Hologram;
 import net.nonswag.tnl.holograms.commands.HologramCommand;
 import net.nonswag.tnl.holograms.listeners.JoinListener;
@@ -17,6 +14,7 @@ import net.nonswag.tnl.listener.api.object.Object;
 import net.nonswag.tnl.listener.api.server.Server;
 import net.nonswag.tnl.listener.v1_15_R1.TNLListener;
 import net.nonswag.tnl.listener.v1_15_R1.api.player.TNLPlayer;
+import net.nonswag.tnl.listener.v1_15_R1.utils.PacketUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -167,6 +165,36 @@ public class Holograms extends JavaPlugin {
                 }
             }
         }
+    }
+
+    public static void teleport(Hologram hologram, Location location, TNLPlayer player) {
+        for (int line = 0; line < hologram.getLines().size(); line++) {
+            for (int darkness = 0; darkness < hologram.getDarkness(); darkness++) {
+                java.lang.Object id = player.getVirtualStorage().get("hologram=" + hologram.getName() + ",line=" + line + ",darkness=" + darkness);
+                if (id instanceof Integer) {
+                    PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport();
+                    PacketUtil.setPacketField(teleport, "a", id);
+                    PacketUtil.setPacketField(teleport, "b", location.getX());
+                    PacketUtil.setPacketField(teleport, "c", (location.getY() - 1) + (line * hologram.getLineDistance()));
+                    PacketUtil.setPacketField(teleport, "d", location.getZ());
+                    player.sendPacket(teleport);
+                }
+            }
+        }
+    }
+
+    public static void teleportAll(Hologram hologram, Location location) {
+        for (TNLPlayer all : TNLListener.getOnlinePlayers()) {
+            teleport(hologram, location, all);
+        }
+    }
+
+    public static void teleportAll(Hologram hologram, double offsetX, double offsetY, double offsetZ) {
+        hologram.teleportAll(hologram.getLocation().clone().add(offsetX, offsetY, offsetZ));
+    }
+
+    public static void teleport(Hologram hologram, double offsetX, double offsetY, double offsetZ, TNLPlayer player) {
+        hologram.teleport(hologram.getLocation().clone().add(offsetX, offsetY, offsetZ), player);
     }
 
     public static void reloadAll() {
