@@ -23,6 +23,12 @@ public class Hologram {
     %status_$SERVER% -> The status of the server (Online/Offline)
     %online_$SERVER% -> The player count of the server
     %max_online_$SERVER% -> The maximum player count of the server
+    %online% -> The player count of this server
+    %max_online% -> The maximum player count of this server
+    %world% -> The name of this world
+    %world_alias% -> The alias of this world
+
+    %players_$WORLD% -> The player count of the world
 
     & = §
     >> = »
@@ -154,6 +160,14 @@ public class Hologram {
         }
         unloadAll();
         Holograms.delete(this);
+    }
+
+    public void updateAll() {
+        Holograms.updateAll(this);
+    }
+
+    public void update(TNLPlayer player) {
+        Holograms.update(this, player);
     }
 
     public void teleport(Location location, TNLPlayer player) {
