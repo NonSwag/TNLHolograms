@@ -2,6 +2,7 @@ package net.nonswag.tnl.holograms.runnables;
 
 import net.nonswag.tnl.holograms.Holograms;
 import net.nonswag.tnl.holograms.api.Hologram;
+import net.nonswag.tnl.listener.NMSMain;
 
 import javax.annotation.Nonnull;
 
@@ -18,7 +19,10 @@ public class UpdateRunnable {
                     }
                     Thread.sleep(Holograms.getUpdateTime());
                 } while (true);
-            } catch (Throwable ignored) {
+            } catch (Throwable t) {
+                if (!(t instanceof InterruptedException)) {
+                    NMSMain.stacktrace(t);
+                }
             }
         });
         thread.setDaemon(true);

@@ -2,7 +2,6 @@ package net.nonswag.tnl.holograms.tabcompleter;
 
 import net.nonswag.tnl.holograms.Holograms;
 import net.nonswag.tnl.holograms.api.Option;
-import net.nonswag.tnl.listener.NMSMain;
 import net.nonswag.tnl.listener.api.server.Server;
 import net.nonswag.tnl.listener.v1_15_R1.TNLListener;
 import net.nonswag.tnl.listener.v1_15_R1.api.player.TNLPlayer;
@@ -36,7 +35,9 @@ public class HologramCommandTabCompleter implements TabCompleter {
                 if (args.length < 3) {
                     suggestions.addAll(Holograms.cachedNameValues());
                 } else if (args.length == 3) {
-                    suggestions.addAll(NMSMain.getWorlds());
+                    for (TNLPlayer all : TNLListener.getOnlinePlayers()) {
+                        suggestions.add(all.getName());
+                    }
                 }
             } else if (args[0].equalsIgnoreCase("set")) {
                 if (args.length < 3) {

@@ -144,9 +144,25 @@ public class HologramCommand implements CommandExecutor {
                 } else if (args[0].equalsIgnoreCase("teleport")) {
                     if (args.length >= 2) {
                         Hologram hologram = Holograms.get(args[1]);
-                        sender.sendMessage(NMSMain.getPrefix() + " §cTODO");
+                        if (hologram != null) {
+                            if (args.length >= 3) {
+                                TNLPlayer arg = TNLPlayer.cast(args[2]);
+                                if (arg != null) {
+                                    hologram.teleport(player.getLocation(), arg);
+                                    sender.sendMessage(NMSMain.getPrefix() + " §aTeleported hologram for §6" + arg.getName());
+                                } else {
+                                    sender.sendMessage(NMSMain.getPrefix() + " §c/hologram teleport §8[§6Hologram§8] §8(§6Player§8)");
+                                }
+                            } else {
+                                hologram.setLocation(player.getLocation());
+                                hologram.teleportAll(hologram.getLocation());
+                                sender.sendMessage(NMSMain.getPrefix() + " §aTeleported hologram for §6all§a players");
+                            }
+                        } else {
+                            sender.sendMessage(NMSMain.getPrefix() + " §c/hologram teleport §8[§6Hologram§8] §8(§6Player§8)");
+                        }
                     } else {
-                        sender.sendMessage(NMSMain.getPrefix() + " §c/hologram teleport §8[§6Hologram§8] §8(§6World§8) §8(§6X§8) §8(§6Y§8) §8(§6Z§8)");
+                        sender.sendMessage(NMSMain.getPrefix() + " §c/hologram teleport §8[§6Hologram§8] §8(§6Player§8)");
                     }
                 } else if (args[0].equalsIgnoreCase("delete")) {
                     if (args.length >= 2) {
@@ -177,14 +193,44 @@ public class HologramCommand implements CommandExecutor {
                 } else if (args[0].equalsIgnoreCase("load")) {
                     if (args.length >= 2) {
                         Hologram hologram = Holograms.get(args[1]);
-                        sender.sendMessage(NMSMain.getPrefix() + " §cTODO");
+                        if (hologram != null) {
+                            if (args.length >= 3) {
+                                TNLPlayer arg = TNLPlayer.cast(args[2]);
+                                if (arg != null) {
+                                    hologram.load(arg);
+                                    sender.sendMessage(NMSMain.getPrefix() + " §aLoaded hologram for §6" + arg.getName());
+                                } else {
+                                    sender.sendMessage(NMSMain.getPrefix() + " §c/hologram load §8[§6Hologram§8] §8(§6Player§8)");
+                                }
+                            } else {
+                                hologram.loadAll();
+                                sender.sendMessage(NMSMain.getPrefix() + " §aLoaded hologram for §6all§a players");
+                            }
+                        } else {
+                            sender.sendMessage(NMSMain.getPrefix() + " §c/hologram load §8[§6Hologram§8] §8(§6Player§8)");
+                        }
                     } else {
                         sender.sendMessage(NMSMain.getPrefix() + " §c/hologram load §8[§6Hologram§8] §8(§6Player§8)");
                     }
                 } else if (args[0].equalsIgnoreCase("unload")) {
                     if (args.length >= 2) {
                         Hologram hologram = Holograms.get(args[1]);
-                        sender.sendMessage(NMSMain.getPrefix() + " §cTODO");
+                        if (hologram != null) {
+                            if (args.length >= 3) {
+                                TNLPlayer arg = TNLPlayer.cast(args[2]);
+                                if (arg != null) {
+                                    hologram.unload(arg);
+                                    sender.sendMessage(NMSMain.getPrefix() + " §aUnloaded hologram for §6" + arg.getName());
+                                } else {
+                                    sender.sendMessage(NMSMain.getPrefix() + " §c/hologram unload §8[§6Hologram§8] §8(§6Player§8)");
+                                }
+                            } else {
+                                hologram.unloadAll();
+                                sender.sendMessage(NMSMain.getPrefix() + " §aUnloaded hologram for §6all§a players");
+                            }
+                        } else {
+                            sender.sendMessage(NMSMain.getPrefix() + " §c/hologram unload §8[§6Hologram§8] §8(§6Player§8)");
+                        }
                     } else {
                         sender.sendMessage(NMSMain.getPrefix() + " §c/hologram unload §8[§6Hologram§8] §8(§6Player§8)");
                     }
