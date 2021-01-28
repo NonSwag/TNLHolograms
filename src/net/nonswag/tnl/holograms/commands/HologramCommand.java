@@ -5,7 +5,7 @@ import net.nonswag.tnl.holograms.api.Hologram;
 import net.nonswag.tnl.holograms.api.Option;
 import net.nonswag.tnl.listener.NMSMain;
 import net.nonswag.tnl.listener.api.title.Title;
-import net.nonswag.tnl.listener.v1_15_R1.api.player.TNLPlayer;
+import net.nonswag.tnl.listener.api.player.TNLPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.Command;

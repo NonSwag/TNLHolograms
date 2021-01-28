@@ -2,7 +2,7 @@ package net.nonswag.tnl.holograms.api;
 
 import net.nonswag.tnl.holograms.Holograms;
 import net.nonswag.tnl.listener.NMSMain;
-import net.nonswag.tnl.listener.v1_15_R1.api.player.TNLPlayer;
+import net.nonswag.tnl.listener.api.player.TNLPlayer;
 import org.bukkit.Location;
 import org.bukkit.World;
 

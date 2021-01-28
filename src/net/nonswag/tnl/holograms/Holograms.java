@@ -13,9 +13,9 @@ import net.nonswag.tnl.listener.NMSMain;
 import net.nonswag.tnl.listener.api.file.Configuration;
 import net.nonswag.tnl.listener.api.object.Object;
 import net.nonswag.tnl.listener.api.server.Server;
-import net.nonswag.tnl.listener.v1_15_R1.TNLListener;
-import net.nonswag.tnl.listener.v1_15_R1.api.player.TNLPlayer;
-import net.nonswag.tnl.listener.v1_15_R1.utils.PacketUtil;
+import net.nonswag.tnl.listener.TNLListener;
+import net.nonswag.tnl.listener.api.player.TNLPlayer;
+import net.nonswag.tnl.listener.utils.PacketUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -52,10 +52,10 @@ public class Holograms extends JavaPlugin {
             hologramCommand.setPermission("tnl.hologram");
             hologramCommand.setPermissionMessage(NMSMain.getPrefix() + " §cYou have no Rights §8(§4tnl.hologram§8)");
         }
-        NMSMain.registerEvents(new JoinListener(), getPlugin());
-        NMSMain.registerEvents(new QuitListener(), getPlugin());
-        NMSMain.registerEvents(new KickListener(), getPlugin());
-        NMSMain.registerEvents(new WorldChangeListener(), getPlugin());
+        Bukkit.getPluginManager().registerEvents(new JoinListener(), getPlugin());
+        Bukkit.getPluginManager().registerEvents(new QuitListener(), getPlugin());
+        Bukkit.getPluginManager().registerEvents(new KickListener(), getPlugin());
+        Bukkit.getPluginManager().registerEvents(new WorldChangeListener(), getPlugin());
         if (getSaves().getLong("update-time") == null) {
             getSaves().setValue("update-time", updateTime);
         } else {
