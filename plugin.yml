@@ -1,5 +1,5 @@
 name: "TNLHolograms"
-version: "2.0"
+version: "2.1"
 main: net.nonswag.tnl.holograms.Holograms
 api-version: "1.15"
 author: "NonSwag"

@@ -16,6 +16,7 @@ import net.nonswag.tnl.listener.api.server.Server;
 import net.nonswag.tnl.listener.TNLListener;
 import net.nonswag.tnl.listener.api.player.TNLPlayer;
 import net.nonswag.tnl.listener.utils.PacketUtil;
+import net.nonswag.tnl.listener.utils.PluginUpdate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -63,6 +64,7 @@ public class Holograms extends JavaPlugin {
         }
         UpdateRunnable.start();
         loadAll();
+        new PluginUpdate(getPlugin()).downloadUpdate();
     }
 
     @Override
