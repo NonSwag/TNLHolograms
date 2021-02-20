@@ -10,6 +10,7 @@ import net.nonswag.tnl.holograms.listeners.WorldChangeListener;
 import net.nonswag.tnl.holograms.runnables.UpdateRunnable;
 import net.nonswag.tnl.holograms.tabcompleter.HologramCommandTabCompleter;
 import net.nonswag.tnl.listener.NMSMain;
+import net.nonswag.tnl.listener.api.command.CommandManager;
 import net.nonswag.tnl.listener.api.file.Configuration;
 import net.nonswag.tnl.listener.api.object.Object;
 import net.nonswag.tnl.listener.api.server.Server;
@@ -20,7 +21,6 @@ import net.nonswag.tnl.listener.utils.PluginUpdate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftArmorStand;
@@ -46,13 +46,8 @@ public class Holograms extends JavaPlugin {
     public void onEnable() {
         setPlugin(this);
         unloadAll();
-        PluginCommand hologramCommand = getCommand("hologram");
-        if (hologramCommand != null) {
-            hologramCommand.setExecutor(new HologramCommand());
-            hologramCommand.setTabCompleter(new HologramCommandTabCompleter());
-            hologramCommand.setPermission("tnl.hologram");
-            hologramCommand.setPermissionMessage(NMSMain.getPrefix() + " §cYou have no Rights §8(§4tnl.hologram§8)");
-        }
+        CommandManager commandManager = new CommandManager(this);
+        commandManager.registerCommand("hologram", "tnl.holograms", new HologramCommand(), new HologramCommandTabCompleter());
         Bukkit.getPluginManager().registerEvents(new JoinListener(), getPlugin());
         Bukkit.getPluginManager().registerEvents(new QuitListener(), getPlugin());
         Bukkit.getPluginManager().registerEvents(new KickListener(), getPlugin());
@@ -126,14 +121,15 @@ public class Holograms extends JavaPlugin {
                 int lines = getSaves().getInteger(hologram.getName() + "-lines");
                 hologram.setLocation(new Location(world, x, y, z));
                 for (int i = 0; i < lines; i++) {
-                    try {
-                        hologram.getLines().add(getSaves().getString(hologram.getName() + "-line-" + i));
-                    } catch (Throwable t) {
+                    String string = getSaves().getString(hologram.getName() + "-line-" + i);
+                    if (string != null && !string.replace(" ", "").isEmpty()) {
+                        hologram.getLines().add(string);
+                    } else {
                         hologram.getLines().add("");
                     }
                 }
-            } catch (Throwable t) {
-                NMSMain.stacktrace(t);
+            } catch (Exception e) {
+                NMSMain.stacktrace(e);
                 continue;
             }
             loadAll(hologram);
@@ -143,7 +139,7 @@ public class Holograms extends JavaPlugin {
     public static void load(Hologram hologram, TNLPlayer player) {
         if (player.getWorld().equals(hologram.getWorld())) {
             for (int line = 0; line < hologram.getLines().size(); line++) {
-                if (hologram.getLines().get(line) == null || hologram.getLines().get(line).isEmpty()) {
+                if (hologram.getLines().get((hologram.getLines().size() - 1) - line) == null || hologram.getLines().get((hologram.getLines().size() - 1) - line).isEmpty()) {
                     continue;
                 }
                 for (int darkness = 0; darkness < hologram.getDarkness(); darkness++) {
@@ -169,11 +165,7 @@ public class Holograms extends JavaPlugin {
                             replace("%max_online%", Bukkit.getMaxPlayers() + "").
                             replace("%world%", player.getWorld().getName() + "").
                             replace("%world_alias%", player.getWorldAlias() + "");
-                    if (s.contains("%status_")
-                            || s.contains("%online_")
-                            || s.contains("%max_online_")
-                            || s.contains("%players_")
-                    ) {
+                    if (s.contains("%status_") || s.contains("%online_") || s.contains("%max_online_") || s.contains("%players_")) {
                         for (Server server : Server.getServers()) {
                             if (s.contains("%status_" + server.getName() + "%")) {
                                 s = s.replace("%status_" + server.getName() + "%", server.isOnline() ? "Online" : "Offline");
@@ -191,9 +183,9 @@ public class Holograms extends JavaPlugin {
                             }
                         }
                     }
-                    armorStand.setCustomName(s);
                     armorStand.setCustomNameVisible(true);
                     armorStand.setBasePlate(false);
+                    armorStand.setCustomName(s);
                     player.sendPacket(new PacketPlayOutSpawnEntity(armorStand.getHandle()));
                     player.sendPacket(new PacketPlayOutEntityMetadata(armorStand.getEntityId(), armorStand.getHandle().getDataWatcher(), true));
                     player.getVirtualStorage().put("hologram=" + hologram.getName() + ",line=" + line + ",darkness=" + darkness, armorStand.getEntityId());
@@ -243,11 +235,11 @@ public class Holograms extends JavaPlugin {
                                 s = s.replace("%players_" + world.getName() + "%", world.getPlayerCount() + "");
                             }
                         }
+                        armorStand.setCustomName(new ChatMessage(s));
+                        armorStand.setCustomNameVisible(true);
+                        PacketPlayOutEntityMetadata metadataPacket = new PacketPlayOutEntityMetadata(((Integer) id), armorStand.getDataWatcher(), true);
+                        player.sendPacket(metadataPacket);
                     }
-                    armorStand.setCustomName(new ChatMessage(s));
-                    armorStand.setCustomNameVisible(true);
-                    PacketPlayOutEntityMetadata metadataPacket = new PacketPlayOutEntityMetadata(((Integer) id), armorStand.getDataWatcher(), true);
-                    player.sendPacket(metadataPacket);
                 }
             }
         }
