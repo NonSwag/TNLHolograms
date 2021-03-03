@@ -12,7 +12,7 @@ import net.nonswag.tnl.holograms.tabcompleter.HologramCommandTabCompleter;
 import net.nonswag.tnl.listener.NMSMain;
 import net.nonswag.tnl.listener.api.command.CommandManager;
 import net.nonswag.tnl.listener.api.file.Configuration;
-import net.nonswag.tnl.listener.api.object.Object;
+import net.nonswag.tnl.listener.api.object.Objects;
 import net.nonswag.tnl.listener.api.server.Server;
 import net.nonswag.tnl.listener.TNLListener;
 import net.nonswag.tnl.listener.api.player.TNLPlayer;
@@ -112,8 +112,8 @@ public class Holograms extends JavaPlugin {
         for (String s : holograms) {
             Hologram hologram = getOrDefault(s, new Hologram(s, true));
             try {
-                hologram.setDarkness(new Object<>(getSaves().getInteger(hologram.getName() + "-darkness")).getOrDefault(1));
-                hologram.setLineDistance(new Object<>(getSaves().getDouble(hologram.getName() + "-line-distance")).getOrDefault(0.25D));
+                hologram.setDarkness(new Objects<>(getSaves().getInteger(hologram.getName() + "-darkness")).getOrDefault(1));
+                hologram.setLineDistance(new Objects<>(getSaves().getDouble(hologram.getName() + "-line-distance")).getOrDefault(0.25D));
                 World world = Bukkit.getWorld(getSaves().getString(hologram.getName() + "-world"));
                 double x = getSaves().getDouble(hologram.getName() + "-x-position");
                 double y = getSaves().getDouble(hologram.getName() + "-y-position");
@@ -376,6 +376,6 @@ public class Holograms extends JavaPlugin {
 
     @Nonnull
     public static List<String> list() {
-        return new Object<>(getSaves().getStringList("holograms")).getOrDefault(new ArrayList<>());
+        return new Objects<>(getSaves().getStringList("holograms")).getOrDefault(new ArrayList<>());
     }
 }
