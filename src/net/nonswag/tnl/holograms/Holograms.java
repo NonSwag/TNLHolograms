@@ -9,9 +9,9 @@ import net.nonswag.tnl.holograms.listeners.QuitListener;
 import net.nonswag.tnl.holograms.listeners.WorldChangeListener;
 import net.nonswag.tnl.holograms.runnables.UpdateRunnable;
 import net.nonswag.tnl.holograms.tabcompleter.HologramCommandTabCompleter;
-import net.nonswag.tnl.listener.NMSMain;
 import net.nonswag.tnl.listener.api.command.CommandManager;
 import net.nonswag.tnl.listener.api.file.Configuration;
+import net.nonswag.tnl.listener.api.logger.Logger;
 import net.nonswag.tnl.listener.api.object.Objects;
 import net.nonswag.tnl.listener.api.server.Server;
 import net.nonswag.tnl.listener.TNLListener;
@@ -95,7 +95,7 @@ public class Holograms extends JavaPlugin {
     }
 
     public static void loadAll(Hologram hologram) {
-        for (TNLPlayer all : TNLListener.getOnlinePlayers()) {
+        for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
             load(hologram, all);
         }
     }
@@ -129,7 +129,7 @@ public class Holograms extends JavaPlugin {
                     }
                 }
             } catch (Exception e) {
-                NMSMain.stacktrace(e);
+                Logger.error.println(e);
                 continue;
             }
             loadAll(hologram);
@@ -246,7 +246,7 @@ public class Holograms extends JavaPlugin {
     }
 
     public static void updateAll(Hologram hologram) {
-        for (TNLPlayer all : TNLListener.getOnlinePlayers()) {
+        for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
             update(hologram, all);
         }
     }
@@ -268,7 +268,7 @@ public class Holograms extends JavaPlugin {
     }
 
     public static void teleportAll(Hologram hologram, Location location) {
-        for (TNLPlayer all : TNLListener.getOnlinePlayers()) {
+        for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
             teleport(hologram, location, all);
         }
     }
@@ -302,7 +302,7 @@ public class Holograms extends JavaPlugin {
     }
 
     public static void unloadAll(Hologram hologram) {
-        for (TNLPlayer all : TNLListener.getOnlinePlayers()) {
+        for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
             unload(hologram, all);
         }
     }

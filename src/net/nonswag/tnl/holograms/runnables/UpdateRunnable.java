@@ -2,7 +2,7 @@ package net.nonswag.tnl.holograms.runnables;
 
 import net.nonswag.tnl.holograms.Holograms;
 import net.nonswag.tnl.holograms.api.Hologram;
-import net.nonswag.tnl.listener.NMSMain;
+import net.nonswag.tnl.listener.api.logger.Logger;
 
 import javax.annotation.Nonnull;
 
@@ -21,7 +21,7 @@ public class UpdateRunnable {
                 } while (true);
             } catch (Throwable t) {
                 if (!(t instanceof InterruptedException)) {
-                    NMSMain.stacktrace(t);
+                    Logger.error.println(t);
                 }
             }
         });

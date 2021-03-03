@@ -1,6 +1,6 @@
 package net.nonswag.tnl.holograms.api;
 
-import net.nonswag.tnl.listener.NMSMain;
+import net.nonswag.tnl.listener.TNLListener;
 import org.bukkit.World;
 
 import javax.annotation.Nonnull;
@@ -15,7 +15,7 @@ public enum Option {
     Y_POSITION(Double.class),
     Z_POSITION(Double.class),
     DARKNESS(Integer.class, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"),
-    WORLD(World.class, NMSMain.getWorlds()),
+    WORLD(World.class, TNLListener.getInstance().getWorlds()),
     ;
 
     @Nonnull private final String name;

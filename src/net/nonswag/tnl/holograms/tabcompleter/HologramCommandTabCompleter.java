@@ -35,7 +35,7 @@ public class HologramCommandTabCompleter implements TabCompleter {
                 if (args.length < 3) {
                     suggestions.addAll(Holograms.cachedNameValues());
                 } else if (args.length == 3) {
-                    for (TNLPlayer all : TNLListener.getOnlinePlayers()) {
+                    for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
                         suggestions.add(all.getName());
                     }
                 }
@@ -56,7 +56,7 @@ public class HologramCommandTabCompleter implements TabCompleter {
                 if (args.length < 3) {
                     suggestions.addAll(Holograms.cachedNameValues());
                 } else if (args.length == 3) {
-                    for (TNLPlayer all : TNLListener.getOnlinePlayers()) {
+                    for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
                         suggestions.add(all.getName());
                     }
                 }
@@ -83,7 +83,7 @@ public class HologramCommandTabCompleter implements TabCompleter {
                 if (args.length < 3) {
                     suggestions.addAll(Holograms.cachedNameValues());
                 } else if (args.length == 3) {
-                    for (TNLPlayer all : TNLListener.getOnlinePlayers()) {
+                    for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
                         suggestions.add(all.getName());
                     }
                 }

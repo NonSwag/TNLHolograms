@@ -1,7 +1,7 @@
 package net.nonswag.tnl.holograms.api;
 
 import net.nonswag.tnl.holograms.Holograms;
-import net.nonswag.tnl.listener.NMSMain;
+import net.nonswag.tnl.listener.api.logger.Logger;
 import net.nonswag.tnl.listener.api.player.TNLPlayer;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -86,10 +86,10 @@ public class Hologram {
     public void setDarkness(int darkness) {
         if (darkness > 10) {
             darkness = 10;
-            NMSMain.stacktrace(new IllegalArgumentException("The hologram darkness can't be higher then 10"));
+            Logger.error.println(new IllegalArgumentException("The hologram darkness can't be higher then 10"));
         } else if (darkness < 1) {
             darkness = 1;
-            NMSMain.stacktrace(new IllegalArgumentException("The hologram darkness can't be lower then 1"));
+            Logger.error.println(new IllegalArgumentException("The hologram darkness can't be lower then 1"));
         }
         this.darkness = darkness;
     }
