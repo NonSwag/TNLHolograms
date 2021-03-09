@@ -21,10 +21,7 @@ import net.nonswag.tnl.listener.utils.PluginUpdate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftArmorStand;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.annotation.Nonnull;
@@ -36,7 +33,8 @@ import java.util.List;
 
 public class Holograms extends JavaPlugin {
 
-    @Nullable private static Plugin plugin;
+    private static Holograms instance;
+
     @Nonnull private static final Configuration saves = new Configuration("plugins/TNLHolograms/", "saves.tnldatabase");
     @Nonnull private static final HashMap<String, Hologram> hologramHashMap = new HashMap<>();
     @Nonnull private static final String serverName = new File("").getAbsoluteFile().getName();
@@ -44,14 +42,14 @@ public class Holograms extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        setPlugin(this);
+        setInstance(this);
         unloadAll();
         CommandManager commandManager = new CommandManager(this);
         commandManager.registerCommand("hologram", "tnl.holograms", new HologramCommand(), new HologramCommandTabCompleter());
-        Bukkit.getPluginManager().registerEvents(new JoinListener(), getPlugin());
-        Bukkit.getPluginManager().registerEvents(new QuitListener(), getPlugin());
-        Bukkit.getPluginManager().registerEvents(new KickListener(), getPlugin());
-        Bukkit.getPluginManager().registerEvents(new WorldChangeListener(), getPlugin());
+        Bukkit.getPluginManager().registerEvents(new JoinListener(), getInstance());
+        Bukkit.getPluginManager().registerEvents(new QuitListener(), getInstance());
+        Bukkit.getPluginManager().registerEvents(new KickListener(), getInstance());
+        Bukkit.getPluginManager().registerEvents(new WorldChangeListener(), getInstance());
         if (getSaves().getLong("update-time") == null) {
             getSaves().setValue("update-time", updateTime);
         } else {
@@ -59,7 +57,7 @@ public class Holograms extends JavaPlugin {
         }
         UpdateRunnable.start();
         loadAll();
-        new PluginUpdate(getPlugin()).downloadUpdate();
+        new PluginUpdate(getInstance()).downloadUpdate();
     }
 
     @Override
@@ -67,13 +65,12 @@ public class Holograms extends JavaPlugin {
         UpdateRunnable.stop();
     }
 
-    private static void setPlugin(@Nullable Plugin plugin) {
-        Holograms.plugin = plugin;
+    protected static void setInstance(@Nonnull Holograms instance) {
+        Holograms.instance = instance;
     }
 
-    @Nullable
-    public static Plugin getPlugin() {
-        return plugin;
+    public static Holograms getInstance() {
+        return instance;
     }
 
     @Nonnull
@@ -94,13 +91,13 @@ public class Holograms extends JavaPlugin {
         Holograms.updateTime = updateTime;
     }
 
-    public static void loadAll(Hologram hologram) {
+    public static void loadAll(@Nonnull Hologram hologram) {
         for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
             load(hologram, all);
         }
     }
 
-    public static void loadAll(TNLPlayer player) {
+    public static void loadAll(@Nonnull TNLPlayer player) {
         for (Hologram hologram : getHologramHashMap().values()) {
             load(hologram, player);
         }
@@ -112,8 +109,8 @@ public class Holograms extends JavaPlugin {
         for (String s : holograms) {
             Hologram hologram = getOrDefault(s, new Hologram(s, true));
             try {
-                hologram.setDarkness(new Objects<>(getSaves().getInteger(hologram.getName() + "-darkness")).getOrDefault(1));
-                hologram.setLineDistance(new Objects<>(getSaves().getDouble(hologram.getName() + "-line-distance")).getOrDefault(0.25D));
+                hologram.setDarkness(Objects.getOrDefault(getSaves().getInteger(hologram.getName() + "-darkness"), 1));
+                hologram.setLineDistance(Objects.getOrDefault(getSaves().getDouble(hologram.getName() + "-line-distance"), 0.25D));
                 World world = Bukkit.getWorld(getSaves().getString(hologram.getName() + "-world"));
                 double x = getSaves().getDouble(hologram.getName() + "-x-position");
                 double y = getSaves().getDouble(hologram.getName() + "-y-position");
@@ -136,23 +133,17 @@ public class Holograms extends JavaPlugin {
         }
     }
 
-    public static void load(Hologram hologram, TNLPlayer player) {
+    public static void load(@Nonnull Hologram hologram, @Nonnull TNLPlayer player) {
         if (player.getWorld().equals(hologram.getWorld())) {
             for (int line = 0; line < hologram.getLines().size(); line++) {
                 if (hologram.getLines().get((hologram.getLines().size() - 1) - line) == null || hologram.getLines().get((hologram.getLines().size() - 1) - line).isEmpty()) {
                     continue;
                 }
                 for (int darkness = 0; darkness < hologram.getDarkness(); darkness++) {
-                    EntityArmorStand entityArmorStand = new EntityArmorStand(((CraftWorld) player.getWorld()).getHandle(),
+                    EntityArmorStand armorStand = new EntityArmorStand(((CraftWorld) player.getWorld()).getHandle(),
                             hologram.getX(),
                             (hologram.getY() - 1) + (line * hologram.getLineDistance()),
                             hologram.getZ());
-                    CraftArmorStand armorStand = new CraftArmorStand(((CraftServer) Bukkit.getServer()), entityArmorStand);
-                    armorStand.setVisible(false);
-                    armorStand.setSmall(true);
-                    armorStand.setCollidable(false);
-                    armorStand.setInvulnerable(true);
-                    armorStand.setGravity(false);
                     String s = hologram.getLines().get((hologram.getLines().size() - 1) - line).
                             replace("&", "§").
                             replace(">>", "»").
@@ -183,19 +174,22 @@ public class Holograms extends JavaPlugin {
                             }
                         }
                     }
+                    armorStand.setInvisible(true);
+                    armorStand.setSmall(true);
                     armorStand.setCustomNameVisible(true);
-                    armorStand.setBasePlate(false);
-                    armorStand.setCustomName(s);
-                    player.sendPacket(new PacketPlayOutSpawnEntity(armorStand.getHandle()));
-                    player.sendPacket(new PacketPlayOutEntityMetadata(armorStand.getEntityId(), armorStand.getHandle().getDataWatcher(), true));
-                    player.getVirtualStorage().put("hologram=" + hologram.getName() + ",line=" + line + ",darkness=" + darkness, armorStand.getEntityId());
-                    player.getVirtualStorage().put("hologram-by-id=" + armorStand.getEntityId(), armorStand.getHandle());
+                    armorStand.setBasePlate(true);
+                    armorStand.setMarker(false);
+                    armorStand.setCustomName(new ChatMessage(s));
+                    player.sendPacket(new PacketPlayOutSpawnEntity(armorStand));
+                    player.sendPacket(new PacketPlayOutEntityMetadata(armorStand.getId(), armorStand.getDataWatcher(), true));
+                    player.getVirtualStorage().put("hologram=" + hologram.getName() + ",line=" + line + ",darkness=" + darkness, armorStand.getId());
+                    player.getVirtualStorage().put("hologram-by-id=" + armorStand.getId(), armorStand);
                 }
             }
         }
     }
 
-    public static void update(Hologram hologram, TNLPlayer player) {
+    public static void update(@Nonnull Hologram hologram, @Nonnull TNLPlayer player) {
         for (int line = 0; line < hologram.getLines().size(); line++) {
             for (int darkness = 0; darkness < hologram.getDarkness(); darkness++) {
                 java.lang.Object id = player.getVirtualStorage().get("hologram=" + hologram.getName() + ",line=" + line + ",darkness=" + darkness);
@@ -245,13 +239,13 @@ public class Holograms extends JavaPlugin {
         }
     }
 
-    public static void updateAll(Hologram hologram) {
+    public static void updateAll(@Nonnull Hologram hologram) {
         for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
             update(hologram, all);
         }
     }
 
-    public static void teleport(Hologram hologram, Location location, TNLPlayer player) {
+    public static void teleport(@Nonnull Hologram hologram, @Nonnull Location location, @Nonnull TNLPlayer player) {
         for (int line = 0; line < hologram.getLines().size(); line++) {
             for (int darkness = 0; darkness < hologram.getDarkness(); darkness++) {
                 java.lang.Object id = player.getVirtualStorage().get("hologram=" + hologram.getName() + ",line=" + line + ",darkness=" + darkness);
@@ -267,17 +261,17 @@ public class Holograms extends JavaPlugin {
         }
     }
 
-    public static void teleportAll(Hologram hologram, Location location) {
+    public static void teleportAll(@Nonnull Hologram hologram, @Nonnull Location location) {
         for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
             teleport(hologram, location, all);
         }
     }
 
-    public static void teleportAll(Hologram hologram, double offsetX, double offsetY, double offsetZ) {
+    public static void teleportAll(@Nonnull Hologram hologram, double offsetX, double offsetY, double offsetZ) {
         hologram.teleportAll(hologram.getLocation().clone().add(offsetX, offsetY, offsetZ));
     }
 
-    public static void teleport(Hologram hologram, double offsetX, double offsetY, double offsetZ, TNLPlayer player) {
+    public static void teleport(@Nonnull Hologram hologram, double offsetX, double offsetY, double offsetZ, @Nonnull TNLPlayer player) {
         hologram.teleport(hologram.getLocation().clone().add(offsetX, offsetY, offsetZ), player);
     }
 
@@ -286,28 +280,28 @@ public class Holograms extends JavaPlugin {
         loadAll();
     }
 
-    public static void reloadAll(TNLPlayer player) {
+    public static void reloadAll(@Nonnull TNLPlayer player) {
         unloadAll(player);
         loadAll(player);
     }
 
-    public static void reloadAll(Hologram hologram) {
+    public static void reloadAll(@Nonnull Hologram hologram) {
         unloadAll(hologram);
         loadAll(hologram);
     }
 
-    public static void reload(Hologram hologram, TNLPlayer player) {
+    public static void reload(@Nonnull Hologram hologram, @Nonnull TNLPlayer player) {
         unload(hologram, player);
         load(hologram, player);
     }
 
-    public static void unloadAll(Hologram hologram) {
+    public static void unloadAll(@Nonnull Hologram hologram) {
         for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
             unload(hologram, all);
         }
     }
 
-    public static void unloadAll(TNLPlayer player) {
+    public static void unloadAll(@Nonnull TNLPlayer player) {
         for (Hologram hologram : getHologramHashMap().values()) {
             unload(hologram, player);
         }
@@ -319,7 +313,7 @@ public class Holograms extends JavaPlugin {
         }
     }
 
-    public static void unload(Hologram hologram, TNLPlayer player) {
+    public static void unload(@Nonnull Hologram hologram, @Nonnull TNLPlayer player) {
         for (int line = 0; line < hologram.getLines().size(); line++) {
             if (hologram.getLines().get(line) == null || hologram.getLines().get(line).isEmpty()) {
                 continue;
@@ -376,6 +370,6 @@ public class Holograms extends JavaPlugin {
 
     @Nonnull
     public static List<String> list() {
-        return new Objects<>(getSaves().getStringList("holograms")).getOrDefault(new ArrayList<>());
+        return Objects.getOrDefault(getSaves().getStringList("holograms"), new ArrayList<>());
     }
 }
