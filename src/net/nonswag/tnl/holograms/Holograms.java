@@ -13,11 +13,13 @@ import net.nonswag.tnl.listener.api.command.CommandManager;
 import net.nonswag.tnl.listener.api.file.Configuration;
 import net.nonswag.tnl.listener.api.logger.Logger;
 import net.nonswag.tnl.listener.api.object.Objects;
+import net.nonswag.tnl.listener.api.player.TNLPlayer;
+import net.nonswag.tnl.listener.api.player.v1_15_R1.NMSPlayer;
+import net.nonswag.tnl.listener.api.plugin.PluginUpdate;
+import net.nonswag.tnl.listener.api.reflection.Reflection;
 import net.nonswag.tnl.listener.api.server.Server;
 import net.nonswag.tnl.listener.TNLListener;
-import net.nonswag.tnl.listener.api.player.TNLPlayer;
-import net.nonswag.tnl.listener.utils.PacketUtil;
-import net.nonswag.tnl.listener.utils.PluginUpdate;
+import net.nonswag.tnl.listener.api.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -35,9 +37,12 @@ public class Holograms extends JavaPlugin {
 
     private static Holograms instance;
 
-    @Nonnull private static final Configuration saves = new Configuration("plugins/TNLHolograms/", "saves.tnldatabase");
-    @Nonnull private static final HashMap<String, Hologram> hologramHashMap = new HashMap<>();
-    @Nonnull private static final String serverName = new File("").getAbsoluteFile().getName();
+    @Nonnull
+    private static final Configuration saves = new Configuration("plugins/TNLHolograms/", "saves.tnldatabase");
+    @Nonnull
+    private static final HashMap<String, Hologram> hologramHashMap = new HashMap<>();
+    @Nonnull
+    private static final String serverName = new File("").getAbsoluteFile().getName();
     private static long updateTime = 5000L;
 
     @Override
@@ -57,7 +62,9 @@ public class Holograms extends JavaPlugin {
         }
         UpdateRunnable.start();
         loadAll();
-        new PluginUpdate(getInstance()).downloadUpdate();
+        if (Settings.AUTO_UPDATER.getValue()) {
+            new PluginUpdate(getInstance()).downloadUpdate();
+        }
     }
 
     @Override
@@ -92,12 +99,12 @@ public class Holograms extends JavaPlugin {
     }
 
     public static void loadAll(@Nonnull Hologram hologram) {
-        for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
-            load(hologram, all);
+        for (TNLPlayer<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> all : TNLListener.getInstance().getOnlinePlayers()) {
+            load(hologram, ((NMSPlayer) all));
         }
     }
 
-    public static void loadAll(@Nonnull TNLPlayer player) {
+    public static void loadAll(@Nonnull NMSPlayer player) {
         for (Hologram hologram : getHologramHashMap().values()) {
             load(hologram, player);
         }
@@ -133,7 +140,7 @@ public class Holograms extends JavaPlugin {
         }
     }
 
-    public static void load(@Nonnull Hologram hologram, @Nonnull TNLPlayer player) {
+    public static void load(@Nonnull Hologram hologram, @Nonnull NMSPlayer player) {
         if (player.getWorld().equals(hologram.getWorld())) {
             for (int line = 0; line < hologram.getLines().size(); line++) {
                 if (hologram.getLines().get((hologram.getLines().size() - 1) - line) == null || hologram.getLines().get((hologram.getLines().size() - 1) - line).isEmpty()) {
@@ -189,7 +196,7 @@ public class Holograms extends JavaPlugin {
         }
     }
 
-    public static void update(@Nonnull Hologram hologram, @Nonnull TNLPlayer player) {
+    public static void update(@Nonnull Hologram hologram, @Nonnull NMSPlayer player) {
         for (int line = 0; line < hologram.getLines().size(); line++) {
             for (int darkness = 0; darkness < hologram.getDarkness(); darkness++) {
                 java.lang.Object id = player.getVirtualStorage().get("hologram=" + hologram.getName() + ",line=" + line + ",darkness=" + darkness);
@@ -240,21 +247,21 @@ public class Holograms extends JavaPlugin {
     }
 
     public static void updateAll(@Nonnull Hologram hologram) {
-        for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
-            update(hologram, all);
+        for (TNLPlayer<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> all : TNLListener.getInstance().getOnlinePlayers()) {
+            update(hologram, ((NMSPlayer) all));
         }
     }
 
-    public static void teleport(@Nonnull Hologram hologram, @Nonnull Location location, @Nonnull TNLPlayer player) {
+    public static void teleport(@Nonnull Hologram hologram, @Nonnull Location location, @Nonnull NMSPlayer player) {
         for (int line = 0; line < hologram.getLines().size(); line++) {
             for (int darkness = 0; darkness < hologram.getDarkness(); darkness++) {
                 java.lang.Object id = player.getVirtualStorage().get("hologram=" + hologram.getName() + ",line=" + line + ",darkness=" + darkness);
                 if (id instanceof Integer) {
                     PacketPlayOutEntityTeleport teleportPacket = new PacketPlayOutEntityTeleport();
-                    PacketUtil.setPacketField(teleportPacket, "a", id);
-                    PacketUtil.setPacketField(teleportPacket, "b", location.getX());
-                    PacketUtil.setPacketField(teleportPacket, "c", (location.getY() - 1) + (line * hologram.getLineDistance()));
-                    PacketUtil.setPacketField(teleportPacket, "d", location.getZ());
+                    Reflection.setField(teleportPacket, "a", id);
+                    Reflection.setField(teleportPacket, "b", location.getX());
+                    Reflection.setField(teleportPacket, "c", (location.getY() - 1) + (line * hologram.getLineDistance()));
+                    Reflection.setField(teleportPacket, "d", location.getZ());
                     player.sendPacket(teleportPacket);
                 }
             }
@@ -262,8 +269,8 @@ public class Holograms extends JavaPlugin {
     }
 
     public static void teleportAll(@Nonnull Hologram hologram, @Nonnull Location location) {
-        for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
-            teleport(hologram, location, all);
+        for (TNLPlayer<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> all : TNLListener.getInstance().getOnlinePlayers()) {
+            teleport(hologram, location, ((NMSPlayer) all));
         }
     }
 
@@ -271,7 +278,7 @@ public class Holograms extends JavaPlugin {
         hologram.teleportAll(hologram.getLocation().clone().add(offsetX, offsetY, offsetZ));
     }
 
-    public static void teleport(@Nonnull Hologram hologram, double offsetX, double offsetY, double offsetZ, @Nonnull TNLPlayer player) {
+    public static void teleport(@Nonnull Hologram hologram, double offsetX, double offsetY, double offsetZ, @Nonnull NMSPlayer player) {
         hologram.teleport(hologram.getLocation().clone().add(offsetX, offsetY, offsetZ), player);
     }
 
@@ -280,7 +287,7 @@ public class Holograms extends JavaPlugin {
         loadAll();
     }
 
-    public static void reloadAll(@Nonnull TNLPlayer player) {
+    public static void reloadAll(@Nonnull NMSPlayer player) {
         unloadAll(player);
         loadAll(player);
     }
@@ -290,18 +297,18 @@ public class Holograms extends JavaPlugin {
         loadAll(hologram);
     }
 
-    public static void reload(@Nonnull Hologram hologram, @Nonnull TNLPlayer player) {
+    public static void reload(@Nonnull Hologram hologram, @Nonnull NMSPlayer player) {
         unload(hologram, player);
         load(hologram, player);
     }
 
     public static void unloadAll(@Nonnull Hologram hologram) {
-        for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
-            unload(hologram, all);
+        for (TNLPlayer<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> all : TNLListener.getInstance().getOnlinePlayers()) {
+            unload(hologram, (NMSPlayer) all);
         }
     }
 
-    public static void unloadAll(@Nonnull TNLPlayer player) {
+    public static void unloadAll(@Nonnull NMSPlayer player) {
         for (Hologram hologram : getHologramHashMap().values()) {
             unload(hologram, player);
         }
@@ -313,7 +320,7 @@ public class Holograms extends JavaPlugin {
         }
     }
 
-    public static void unload(@Nonnull Hologram hologram, @Nonnull TNLPlayer player) {
+    public static void unload(@Nonnull Hologram hologram, @Nonnull NMSPlayer player) {
         for (int line = 0; line < hologram.getLines().size(); line++) {
             if (hologram.getLines().get(line) == null || hologram.getLines().get(line).isEmpty()) {
                 continue;

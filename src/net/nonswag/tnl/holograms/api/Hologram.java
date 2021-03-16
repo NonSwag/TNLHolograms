@@ -2,7 +2,7 @@ package net.nonswag.tnl.holograms.api;
 
 import net.nonswag.tnl.holograms.Holograms;
 import net.nonswag.tnl.listener.api.logger.Logger;
-import net.nonswag.tnl.listener.api.player.TNLPlayer;
+import net.nonswag.tnl.listener.api.player.v1_15_R1.NMSPlayer;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -166,11 +166,11 @@ public class Hologram {
         Holograms.updateAll(this);
     }
 
-    public void update(TNLPlayer player) {
+    public void update(NMSPlayer player) {
         Holograms.update(this, player);
     }
 
-    public void teleport(Location location, TNLPlayer player) {
+    public void teleport(Location location, NMSPlayer player) {
         Holograms.teleport(this, location, player);
     }
 
@@ -182,11 +182,11 @@ public class Hologram {
         Holograms.teleportAll(this, offsetX, offsetY, offsetZ);
     }
 
-    public void teleport(double offsetX, double offsetY, double offsetZ, TNLPlayer player) {
+    public void teleport(double offsetX, double offsetY, double offsetZ, NMSPlayer player) {
         Holograms.teleport(this, offsetX, offsetY, offsetZ, player);
     }
 
-    public void load(TNLPlayer player) {
+    public void load(NMSPlayer player) {
         Holograms.load(this, player);
     }
 
@@ -194,7 +194,7 @@ public class Hologram {
         Holograms.loadAll(this);
     }
 
-    public void unload(TNLPlayer player) {
+    public void unload(NMSPlayer player) {
         Holograms.unload(this, player);
     }
 
