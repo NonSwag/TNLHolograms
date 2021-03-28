@@ -8,13 +8,13 @@ import net.nonswag.tnl.holograms.listeners.KickListener;
 import net.nonswag.tnl.holograms.listeners.QuitListener;
 import net.nonswag.tnl.holograms.listeners.WorldChangeListener;
 import net.nonswag.tnl.holograms.runnables.UpdateRunnable;
-import net.nonswag.tnl.holograms.tabcompleter.HologramCommandTabCompleter;
+import net.nonswag.tnl.holograms.completer.HologramCommandTabCompleter;
 import net.nonswag.tnl.listener.api.command.CommandManager;
 import net.nonswag.tnl.listener.api.file.Configuration;
 import net.nonswag.tnl.listener.api.logger.Logger;
 import net.nonswag.tnl.listener.api.object.Objects;
 import net.nonswag.tnl.listener.api.player.TNLPlayer;
-import net.nonswag.tnl.listener.api.player.v1_15_R1.NMSPlayer;
+import net.nonswag.tnl.listener.api.player.v1_15.R1.NMSPlayer;
 import net.nonswag.tnl.listener.api.plugin.PluginUpdate;
 import net.nonswag.tnl.listener.api.reflection.Reflection;
 import net.nonswag.tnl.listener.api.server.Server;
@@ -99,7 +99,7 @@ public class Holograms extends JavaPlugin {
     }
 
     public static void loadAll(@Nonnull Hologram hologram) {
-        for (TNLPlayer<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> all : TNLListener.getInstance().getOnlinePlayers()) {
+        for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
             load(hologram, ((NMSPlayer) all));
         }
     }
@@ -149,7 +149,7 @@ public class Holograms extends JavaPlugin {
                 for (int darkness = 0; darkness < hologram.getDarkness(); darkness++) {
                     EntityArmorStand armorStand = new EntityArmorStand(((CraftWorld) player.getWorld()).getHandle(),
                             hologram.getX(),
-                            (hologram.getY() - 1) + (line * hologram.getLineDistance()),
+                            hologram.getY() + (line * hologram.getLineDistance()),
                             hologram.getZ());
                     String s = hologram.getLines().get((hologram.getLines().size() - 1) - line).
                             replace("&", "§").
@@ -185,7 +185,7 @@ public class Holograms extends JavaPlugin {
                     armorStand.setSmall(true);
                     armorStand.setCustomNameVisible(true);
                     armorStand.setBasePlate(true);
-                    armorStand.setMarker(false);
+                    armorStand.setMarker(true);
                     armorStand.setCustomName(new ChatMessage(s));
                     player.sendPacket(new PacketPlayOutSpawnEntity(armorStand));
                     player.sendPacket(new PacketPlayOutEntityMetadata(armorStand.getId(), armorStand.getDataWatcher(), true));
@@ -215,11 +215,7 @@ public class Holograms extends JavaPlugin {
                             replace("%max_online%", Bukkit.getMaxPlayers() + "").
                             replace("%world%", player.getWorld().getName() + "").
                             replace("%world_alias%", player.getWorldAlias() + "");
-                    if (s.contains("%status_")
-                            || s.contains("%online_")
-                            || s.contains("%max_online_")
-                            || s.contains("%players_")
-                    ) {
+                    if (s.contains("%status_") || s.contains("%online_") || s.contains("%max_online_") || s.contains("%players_")) {
                         for (Server server : Server.getServers()) {
                             if (s.contains("%status_" + server.getName() + "%")) {
                                 s = s.replace("%status_" + server.getName() + "%", server.isOnline() ? "Online" : "Offline");
@@ -236,18 +232,18 @@ public class Holograms extends JavaPlugin {
                                 s = s.replace("%players_" + world.getName() + "%", world.getPlayerCount() + "");
                             }
                         }
-                        armorStand.setCustomName(new ChatMessage(s));
-                        armorStand.setCustomNameVisible(true);
-                        PacketPlayOutEntityMetadata metadataPacket = new PacketPlayOutEntityMetadata(((Integer) id), armorStand.getDataWatcher(), true);
-                        player.sendPacket(metadataPacket);
                     }
+                    armorStand.setCustomName(new ChatMessage(s));
+                    armorStand.setCustomNameVisible(true);
+                    PacketPlayOutEntityMetadata metadataPacket = new PacketPlayOutEntityMetadata(((Integer) id), armorStand.getDataWatcher(), true);
+                    player.sendPacket(metadataPacket);
                 }
             }
         }
     }
 
     public static void updateAll(@Nonnull Hologram hologram) {
-        for (TNLPlayer<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> all : TNLListener.getInstance().getOnlinePlayers()) {
+        for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
             update(hologram, ((NMSPlayer) all));
         }
     }
@@ -260,7 +256,7 @@ public class Holograms extends JavaPlugin {
                     PacketPlayOutEntityTeleport teleportPacket = new PacketPlayOutEntityTeleport();
                     Reflection.setField(teleportPacket, "a", id);
                     Reflection.setField(teleportPacket, "b", location.getX());
-                    Reflection.setField(teleportPacket, "c", (location.getY() - 1) + (line * hologram.getLineDistance()));
+                    Reflection.setField(teleportPacket, "c", location.getY() + (line * hologram.getLineDistance()));
                     Reflection.setField(teleportPacket, "d", location.getZ());
                     player.sendPacket(teleportPacket);
                 }
@@ -269,7 +265,7 @@ public class Holograms extends JavaPlugin {
     }
 
     public static void teleportAll(@Nonnull Hologram hologram, @Nonnull Location location) {
-        for (TNLPlayer<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> all : TNLListener.getInstance().getOnlinePlayers()) {
+        for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
             teleport(hologram, location, ((NMSPlayer) all));
         }
     }
@@ -303,7 +299,7 @@ public class Holograms extends JavaPlugin {
     }
 
     public static void unloadAll(@Nonnull Hologram hologram) {
-        for (TNLPlayer<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> all : TNLListener.getInstance().getOnlinePlayers()) {
+        for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
             unload(hologram, (NMSPlayer) all);
         }
     }

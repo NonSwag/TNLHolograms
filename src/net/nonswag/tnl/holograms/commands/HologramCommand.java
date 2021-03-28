@@ -4,7 +4,7 @@ import net.nonswag.tnl.holograms.Holograms;
 import net.nonswag.tnl.holograms.api.Hologram;
 import net.nonswag.tnl.holograms.api.Option;
 import net.nonswag.tnl.listener.api.message.ChatComponent;
-import net.nonswag.tnl.listener.api.player.v1_15_R1.NMSPlayer;
+import net.nonswag.tnl.listener.api.player.v1_15.R1.NMSPlayer;
 import net.nonswag.tnl.listener.api.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
