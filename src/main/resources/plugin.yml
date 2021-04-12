@@ -1,8 +1,8 @@
 name: "TNLHolograms"
 version: "2.2"
-main: net.nonswag.tnl.holograms.Holograms
-api-version: "1.15"
+api-version: "1.13"
 author: "NonSwag"
+main: net.nonswag.tnl.holograms.Holograms
 depend:
   - TNLListener
 commands:

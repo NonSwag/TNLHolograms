@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$</output-path>
     <root id="archive" name="TNLHolograms.jar">
       <element id="module-output" name="TNLHolograms" />
-      <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/plugin.yml" />
     </root>
   </artifact>
 </component>

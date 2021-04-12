@@ -1,7 +1,7 @@
 package net.nonswag.tnl.holograms.completer;
 
-import net.nonswag.tnl.holograms.Holograms;
-import net.nonswag.tnl.holograms.api.Option;
+import net.nonswag.tnl.listener.Holograms;
+import net.nonswag.tnl.listener.api.holograms.Option;
 import net.nonswag.tnl.listener.api.server.Server;
 import net.nonswag.tnl.listener.TNLListener;
 import net.nonswag.tnl.listener.api.player.TNLPlayer;
@@ -33,7 +33,7 @@ public class HologramCommandTabCompleter implements TabCompleter {
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("teleport")) {
                 if (args.length < 3) {
-                    suggestions.addAll(Holograms.cachedNameValues());
+                    suggestions.addAll(Holograms.getInstance().cachedNameValues());
                 } else if (args.length == 3) {
                     for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
                         suggestions.add(all.getName());
@@ -41,7 +41,7 @@ public class HologramCommandTabCompleter implements TabCompleter {
                 }
             } else if (args[0].equalsIgnoreCase("set")) {
                 if (args.length < 3) {
-                    suggestions.addAll(Holograms.cachedNameValues());
+                    suggestions.addAll(Holograms.getInstance().cachedNameValues());
                 } else if (args.length == 3) {
                     for (Option option : Option.values()) {
                         suggestions.add(option.getName());
@@ -54,7 +54,7 @@ public class HologramCommandTabCompleter implements TabCompleter {
                 }
             } else if (args[0].equalsIgnoreCase("unload")) {
                 if (args.length < 3) {
-                    suggestions.addAll(Holograms.cachedNameValues());
+                    suggestions.addAll(Holograms.getInstance().cachedNameValues());
                 } else if (args.length == 3) {
                     for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
                         suggestions.add(all.getName());
@@ -81,7 +81,7 @@ public class HologramCommandTabCompleter implements TabCompleter {
                 }
             } else if (args[0].equalsIgnoreCase("load")) {
                 if (args.length < 3) {
-                    suggestions.addAll(Holograms.cachedNameValues());
+                    suggestions.addAll(Holograms.getInstance().cachedNameValues());
                 } else if (args.length == 3) {
                     for (TNLPlayer all : TNLListener.getInstance().getOnlinePlayers()) {
                         suggestions.add(all.getName());
@@ -89,11 +89,11 @@ public class HologramCommandTabCompleter implements TabCompleter {
                 }
             } else if (args[0].equalsIgnoreCase("delete")) {
                 if (args.length == 2) {
-                    suggestions.addAll(Holograms.list());
+                    suggestions.addAll(Holograms.getInstance().list());
                 }
             } else if (args[0].equalsIgnoreCase("save")) {
                 if (args.length == 2) {
-                    suggestions.addAll(Holograms.cachedNameValues());
+                    suggestions.addAll(Holograms.getInstance().cachedNameValues());
                 }
             }
         }
