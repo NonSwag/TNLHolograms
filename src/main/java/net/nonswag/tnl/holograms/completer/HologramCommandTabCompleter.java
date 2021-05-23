@@ -70,7 +70,7 @@ public class HologramCommandTabCompleter implements TabCompleter {
                     suggestions.add("%max_online%");
                     suggestions.add("%world%");
                     suggestions.add("%world_alias%");
-                    for (Server server : Server.getServers()) {
+                    for (Server server : TNLListener.getInstance().getServers()) {
                         suggestions.add("%online_" + server.getName() + "%");
                         suggestions.add("%max_online_" + server.getName() + "%");
                         suggestions.add("%status_" + server.getName() + "%");
